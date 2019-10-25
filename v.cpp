@@ -61,24 +61,33 @@ int main (int argc, char *argv[]) {
     pointGreen[numPoints] = 255;
     pointBlue[numPoints] = 255;
 
+    pointRed[0] = 100;
+    pointGreen[0] = 100;
+    pointBlue[0] = 100;
+
     // populate maps with random colors
-    for (int i=0; i<numPoints; i++) {
+    for (int i=1; i<numPoints; i++) {
         pointRed[i] = rand() % 256;
         pointGreen[i] = rand() % 256;
         pointBlue[i] = rand() % 256;
     }
 
+    cout << "heading to gpu \n";
+
     // populate the imageArray on the GPU
     gpuVoronoi(imageArray, points, imageSize, numPoints);
-    
+
+    cout << "making points white \n";
 
     // loop through points and set color to white (numPoints)
     for (int i=0; i<numPoints; i++) {
         imageArray[points[i + numPoints] + imageSize * points[i]] = numPoints;
     }
 
+    cout << "writing to file \n";
+
     // write points to file by pulling colors from maps
-    ofstream output("C:/Users/jeffp/CLionProjects/HPC3/output.ppm", ios_base::binary);
+    ofstream output("output.ppm", ios_base::binary);
 
     // store the image header in our output file
     output << "P3" << "\n";
@@ -92,9 +101,13 @@ int main (int argc, char *argv[]) {
     }
     output.close();
 
+    cout << "deleting arrays \n";
+
     // delete arrays from memory
     delete[] imageArray;
     delete[] points;
+
+    cout << "done \n";
 
     return 0;
 }
