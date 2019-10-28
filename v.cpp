@@ -61,12 +61,8 @@ int main (int argc, char *argv[]) {
     pointGreen[numPoints] = 255;
     pointBlue[numPoints] = 255;
 
-    pointRed[0] = 100;
-    pointGreen[0] = 100;
-    pointBlue[0] = 100;
-
     // populate maps with random colors
-    for (int i=1; i<numPoints; i++) {
+    for (int i=0; i<numPoints; i++) {
         pointRed[i] = rand() % 256;
         pointGreen[i] = rand() % 256;
         pointBlue[i] = rand() % 256;
@@ -86,7 +82,7 @@ int main (int argc, char *argv[]) {
 
     cout << "writing to file \n";
 
-    // write points to file by pulling colors from maps
+    //write points to file by pulling colors from maps
     ofstream output("output.ppm", ios_base::binary);
 
     // store the image header in our output file
