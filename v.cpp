@@ -43,13 +43,12 @@ int main (int argc, char *argv[]) {
     unsigned seedY = std::chrono::system_clock::now().time_since_epoch().count();
     shuffle(pointsY.begin(), pointsY.end(), default_random_engine(seedY));
 
-    // fill the points with random coordinates
+    // create an array to hold the points and fill it with random coordinates
     int* points = new int[numPoints + numPoints];
     for(int i = 0; i < numPoints; i++) {
         points[i] = pointsX[i];
         points[i + numPoints] = pointsY[i];
     }
-
 
     // create maps to hold the RGB values of each point
     map<int, int> pointRed;
@@ -68,36 +67,26 @@ int main (int argc, char *argv[]) {
         pointBlue[i] = rand() % 256;
     }
 
-    cout << "heading to gpu \n";
-
     // populate the imageArray on the GPU
     gpuVoronoi(imageArray, points, imageSize, numPoints);
 
-    cout << "making points white \n";
-
-    // loop through points and set color to white (numPoints)
+    // loop through the points and set color to white so they are visible against the colored cells
     for (int i=0; i<numPoints; i++) {
         imageArray[points[i + numPoints] + imageSize * points[i]] = numPoints;
     }
 
-    cout << "writing to file \n";
-
-    //write points to file by pulling colors from maps
-    ofstream output("output.ppm", ios_base::binary);
-
     // store the image header in our output file
+    ofstream output("output.ppm", ios_base::binary);
     output << "P3" << "\n";
     output << imageSize << " " << imageSize << "\r\n";
     output << "255" << "\r\n";
 
-    // store the updated array in our output file
+    // store the image in our output file
     for(int i = 0; i < imageSize * imageSize; i++) {
         output << pointRed[imageArray[i]] << " " << pointGreen[imageArray[i]] << " " << pointBlue[imageArray[i]] << " ";
         output << "\r\n";
     }
     output.close();
-
-    cout << "deleting arrays \n";
 
     // delete arrays from memory
     delete[] imageArray;
